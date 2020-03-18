@@ -1,0 +1,47 @@
+.App{
+  text-align: left;
+}
+.App2{
+  text-align: center;
+}
+
+  nav{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 10vh;
+  background: rgb(73,39,82);
+  color: white;
+}
+.nav-links{
+  width: 40%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  list-style: none;
+}
+.blue {
+  color: black;
+  font-size: 1.4rem;
+  text-align: left;
+}
+.row {
+  padding-top: 5px;
+  }
+  .btn btn-info{
+    margin-left: 200px;
+  }
+
+  img{
+    height: 50px;
+    /* float: left; */
+  }
+  .errorMsg {
+    color:red;
+    margin-bottom: 12px;
+  }
+
+  /* h1{
+    text-align: center;
+    margin-bottom: 0;
+  } */

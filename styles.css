@@ -1,0 +1,12 @@
+.demo-container {
+    height: 570px;
+  }
+  
+  #gridContainer {
+    height: 440px;
+    width:200%;
+  }
+  
+  .dx-filterbuilder-overlay .dx-scrollable-container {
+    max-height: 400px;
+  }
