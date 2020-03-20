@@ -1,34 +1,52 @@
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
- 
-import React from 'react';
+import ArrayStore from 'devextreme/data/array_store';
+import DataSource from 'devextreme/data/data_source';
+import { Button } from 'devextreme-react/button';
+import React, { useEffect } from 'react';
  
 import axios from 'axios';
 import DataGrid, {
   Editing,
-  Button,
-  Column,
-  Lookup,
   
+  Column,
+ 
+  Selection,
 HeaderFilter,
   FilterPanel,
   FilterBuilderPopup,
   Scrolling
 } from 'devextreme-react/data-grid';
+
+const data = []
+const abc= new DataSource({
+  store: new ArrayStore({
+    data: data,
+    key: 'id'
+  })
+});
+
  
 class ManageSO extends React.Component {
  
-  
   constructor(props) {
     super(props)
-    // this.onEdit = this.onEdit.bind(this);
-    // this.onDelete = this.onDelete.bind(this);
+    
+
     this.state = {
-      customers : []
+
+      customers : [],
+      selectedItemKeys: [],
+      key:[]
+    };
+   
+    this.deleteRecords = this.deleteRecords.bind(this);
+    this.selectionChanged = this.selectionChanged.bind(this);
     }
-  }
+  
  
+    
   componentDidMount() {
     axios.get('http://localhost:8080/fetchdata')
     .then(response => { 
@@ -38,15 +56,7 @@ class ManageSO extends React.Component {
     })
    })
   }
-  // onEdit() {
-  //   this.props.onEdit();
-  // }
-  // onDelete() {
-  //   if (this.validator.validateInputs(this.state)) {
-  //     this.props.onDelete(this.state);
-      
-  //   }
-  // }
+  
   render() {
     return (
       <DataGrid
@@ -56,12 +66,21 @@ class ManageSO extends React.Component {
         columnsAutoWidth="true"
         
         dataSource={this.state.customers}
-        client='http://localhost:8080/fetchLob'
       
+     
+          keyExpr="id"
+          onSelectionChanged={this.selectionChanged}
+          selectedRowKeys={this.state.selectedItemKeys}
         showBorders={true}
       >
-        
+         <Button id="gridDeleteSelected"
+          text="Delete Selected Records"
+          height={34}
+          disabled={!this.state.selectedItemKeys.length}
+          onClick={this.deleteRecords} />
+          <Selection mode="multiple" />
          <Editing
+         mode="cell"
                     allowUpdating={true}
                    
                     allowDeleting={true}
@@ -74,12 +93,8 @@ class ManageSO extends React.Component {
         <HeaderFilter visible={true} />
         <Scrolling mode="infinite" />
  
+        <Column dataField="id" caption="SO ID"/>
        
-       <Column type="buttons" caption="Action">
-       {/* onClick={() => this.onEdit()} */}
-       <Button name="edit" icon="edit" />
-                    <Button name="delete" icon="trash" /> 
-                </Column>
        <Column dataField="soType" caption="SO Type"/>
      
        <Column dataField="soStatus" caption="SO Status" />
@@ -128,6 +143,30 @@ class ManageSO extends React.Component {
       </DataGrid>
     );
   }
+  deleteRecords(e) {
+    
+    
+    this.setState({
+      selectedItemKeys: []
+    });
+    
+    abc.reload();
+    
+  }
+  
+  selectionChanged(data) {
+   // console.log("abc")
+    this.setState({
+      selectedItemKeys: data.selectedRowKeys,
+     
+      
+      
+    });
+    
+    axios.delete(`http://localhost:8080/soDetail/${this.state.selectedItemKeys}`)
+  
+  }
+
 }
  
 const filterBuilderPopupPosition = {
@@ -137,4 +176,7 @@ const filterBuilderPopupPosition = {
   offset: { y: 10 }
 };
  
+
 export default ManageSO;
+
+
